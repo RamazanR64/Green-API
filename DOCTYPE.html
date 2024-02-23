@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GREEN-API Methods</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+        }
+        .left-column {
+            flex: 1;
+            padding: 20px;
+        }
+        .right-column {
+            flex: 1;
+            padding: 20px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #responseField {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 100px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+    </style>
+    <script>
+        function getSettings() {
+            var idInstance = document.getElementById("idInstance").value;
+            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://api.green-api.com/waInstance" + idInstance + "/getSettings/" + apiTokenInstance, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = xhr.responseText;
+                    document.getElementById("responseField").innerText = response;
+                }
+            };
+            xhr.send();
+        }
+
+        function getStateInstance() {
+            var idInstance = document.getElementById("idInstance").value;
+            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://api.green-api.com/waInstance" + idInstance + "/getStateInstance/" + apiTokenInstance, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = xhr.responseText;
+                    document.getElementById("responseField").innerText = response;
+                }
+            };
+            xhr.send();
+        }
+
+        function sendMessage() {
+            var idInstance = document.getElementById("idInstance").value;
+            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
+            var message = "Your message here";
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://api.green-api.com/waInstance" + idInstance + "/sendMessage/" + apiTokenInstance, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = xhr.responseText;
+                    document.getElementById("responseField").innerText = response;
+                }
+            };
+            xhr.send(JSON.stringify({ message: message }));
+        }
+
+        function sendFileByUrl() {
+            var idInstance = document.getElementById("idInstance").value;
+            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
+            var fileUrl = "Your file URL here";
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://api.green-api.com/waInstance" + idInstance + "/sendFileByUrl/" + apiTokenInstance, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = xhr.responseText;
+                    document.getElementById("responseField").innerText = response;
+                }
+            };
+            xhr.send(JSON.stringify({ fileUrl: fileUrl }));
+        }
+    </script>
+</head>
+<body>
+    <h1>GREEN-API Methods</h1>
+    <div class="container">
+        <div class="left-column">
+            <label for="idInstance">ID инстанса:</label>
+            <input type="text" id="idInstance" name="idInstance" style="margin-bottom: 10px;"><br>
+            <label for="apiTokenInstance">ApiToken инстанса:</label>
+            <input type="text" id="apiTokenInstance" name="apiTokenInstance" style="margin-bottom: 10px;"><br>
+            <button onclick="getSettings()">getSettings</button>
+            <button onclick="getStateInstance()">getStateInstance</button>
+            <button onclick="sendMessage()">sendMessage</button>
+            <button onclick="sendFileByUrl()">sendFileByUrl</button>
+        </div>
+        <div class="right-column">
+            <h2>Ответы методов:</h2>
+            <div id="responseField"></div>
+        </div>
+    </div>
+</body>
+</html>
