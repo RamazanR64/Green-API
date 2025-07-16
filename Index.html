@@ -1,132 +1,503 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GREEN-API Methods</title>
+    <title>GREEN-API Test Interface</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
+        
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #4CAF50;
+        }
+        
+        .header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header h2 {
+            color: #4CAF50;
+            margin: 10px 0;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+        
+        .main-content {
             display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
         }
-        .left-column {
+        
+        .left-panel {
             flex: 1;
-            padding: 20px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
         }
-        .right-column {
+        
+        .right-panel {
             flex: 1;
-            padding: 20px;
         }
-        button {
+        
+        .connection-params {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px solid #4CAF50;
+        }
+        
+        .connection-params h3 {
+            margin-top: 0;
+            color: #2e7d32;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
             display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        input[type="text"] {
             width: 100%;
-            padding: 10px 20px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .method-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .method-section h4 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .method-inputs {
+            margin-bottom: 15px;
+        }
+        
+        .method-inputs input {
             margin-bottom: 10px;
         }
-        button:hover {
-            background-color: #45a049;
+        
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
         }
-        #responseField {
-            border: 1px solid #ccc;
-            padding: 10px;
-            min-height: 100px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .response-area {
+            width: 100%;
+            height: 400px;
+            background: #1e1e1e;
+            color: #f8f8f2;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            resize: none;
+            box-sizing: border-box;
+        }
+        
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .response-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .clear-btn {
+            background: #f44336;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+        
+        .clear-btn:hover {
+            background: #d32f2f;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-success {
+            background: #4CAF50;
+        }
+        
+        .status-error {
+            background: #f44336;
+        }
+        
+        .status-pending {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+        }
+        
+        .api-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .api-info h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        
+        .api-info p {
+            margin: 5px 0;
+            color: #856404;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
         }
     </style>
-    <script>
-        function getSettings() {
-            var idInstance = document.getElementById("idInstance").value;
-            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "https://api.green-api.com/waInstance" + idInstance + "/getSettings/" + apiTokenInstance, true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = xhr.responseText;
-                    document.getElementById("responseField").innerText = response;
-                }
-            };
-            xhr.send();
-        }
-
-        function getStateInstance() {
-            var idInstance = document.getElementById("idInstance").value;
-            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "https://api.green-api.com/waInstance" + idInstance + "/getStateInstance/" + apiTokenInstance, true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = xhr.responseText;
-                    document.getElementById("responseField").innerText = response;
-                }
-            };
-            xhr.send();
-        }
-
-        function sendMessage() {
-            var idInstance = document.getElementById("idInstance").value;
-            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
-            var message = "Your message here";
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://api.green-api.com/waInstance" + idInstance + "/sendMessage/" + apiTokenInstance, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = xhr.responseText;
-                    document.getElementById("responseField").innerText = response;
-                }
-            };
-            xhr.send(JSON.stringify({ message: message }));
-        }
-
-        function sendFileByUrl() {
-            var idInstance = document.getElementById("idInstance").value;
-            var apiTokenInstance = document.getElementById("apiTokenInstance").value;
-            var fileUrl = "Your file URL here";
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://api.green-api.com/waInstance" + idInstance + "/sendFileByUrl/" + apiTokenInstance, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = xhr.responseText;
-                    document.getElementById("responseField").innerText = response;
-                }
-            };
-            xhr.send(JSON.stringify({ fileUrl: fileUrl }));
-        }
-    </script>
 </head>
 <body>
-    <h1>GREEN-API Methods</h1>
     <div class="container">
-        <div class="left-column">
-            <label for="idInstance">ID инстанса:</label>
-            <input type="text" id="idInstance" name="idInstance" style="margin-bottom: 10px;"><br>
-            <label for="apiTokenInstance">ApiToken инстанса:</label>
-            <input type="text" id="apiTokenInstance" name="apiTokenInstance" style="margin-bottom: 10px;"><br>
-            <button onclick="getSettings()">getSettings</button>
-            <button onclick="getStateInstance()">getStateInstance</button>
-            <button onclick="sendMessage()">sendMessage</button>
-            <button onclick="sendFileByUrl()">sendFileByUrl</button>
+        <div class="header">
+            <h1>GREEN-API Test Interface</h1>
+            <h2>Тестовое задание - Специалист технической поддержки 2 линии</h2>
         </div>
-        <div class="right-column">
-            <h2>Ответы методов:</h2>
-            <div id="responseField"></div>
+        
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="connection-params">
+                    <h3>Параметры подключения</h3>
+                    <div class="form-group">
+                        <label for="idInstance">idInstance:</label>
+                        <input type="text" id="idInstance" placeholder="Введите idInstance">
+                    </div>
+                    <div class="form-group">
+                        <label for="apiToken">ApiTokenInstance:</label>
+                        <input type="text" id="apiToken" placeholder="Введите ApiTokenInstance">
+                    </div>
+                </div>
+                
+                <div class="api-info">
+                    <h4>Информация о методах:</h4>
+                    <p><strong>getSettings</strong> - получение настроек инстанса</p>
+                    <p><strong>getStateInstance</strong> - получение состояния инстанса</p>
+                    <p><strong>sendMessage</strong> - отправка текстового сообщения</p>
+                    <p><strong>sendFileByUrl</strong> - отправка файла по URL</p>
+                </div>
+                
+                <div class="method-section">
+                    <h4>1. getSettings</h4>
+                    <button onclick="getSettings()">
+                        <span class="status-indicator" id="status-getSettings"></span>
+                        Получить настройки
+                    </button>
+                </div>
+                
+                <div class="method-section">
+                    <h4>2. getStateInstance</h4>
+                    <button onclick="getStateInstance()">
+                        <span class="status-indicator" id="status-getStateInstance"></span>
+                        Получить состояние
+                    </button>
+                </div>
+                
+                <div class="method-section">
+                    <h4>3. sendMessage</h4>
+                    <div class="method-inputs">
+                        <input type="text" id="chatId" placeholder="Номер телефона (например: 77001234567@c.us)">
+                        <input type="text" id="message" placeholder="Текст сообщения">
+                    </div>
+                    <button onclick="sendMessage()">
+                        <span class="status-indicator" id="status-sendMessage"></span>
+                        Отправить сообщение
+                    </button>
+                </div>
+                
+                <div class="method-section">
+                    <h4>4. sendFileByUrl</h4>
+                    <div class="method-inputs">
+                        <input type="text" id="fileChatId" placeholder="Номер телефона (например: 77001234567@c.us)">
+                        <input type="text" id="fileUrl" placeholder="URL файла">
+                        <input type="text" id="fileName" placeholder="Имя файла">
+                    </div>
+                    <button onclick="sendFileByUrl()">
+                        <span class="status-indicator" id="status-sendFileByUrl"></span>
+                        Отправить файл
+                    </button>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="response-header">
+                    <h3>Ответ методов</h3>
+                    <button class="clear-btn" onclick="clearResponse()">Очистить</button>
+                </div>
+                <textarea id="responseArea" class="response-area" readonly placeholder="Здесь будут отображаться ответы API методов..."></textarea>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 GREEN-API Test Interface | Создано для тестового задания</p>
         </div>
     </div>
+
+    <script>
+        const API_URL = 'https://api.green-api.com';
+        
+        function updateStatus(method, status) {
+            const statusElement = document.getElementById(`status-${method}`);
+            statusElement.className = `status-indicator status-${status}`;
+        }
+        
+        function logResponse(method, response) {
+            const responseArea = document.getElementById('responseArea');
+            const timestamp = new Date().toLocaleString();
+            const separator = '='.repeat(50);
+            
+            const logEntry = `${separator}\n[${timestamp}] ${method.toUpperCase()}\n${separator}\n${JSON.stringify(response, null, 2)}\n\n`;
+            
+            responseArea.value += logEntry;
+            responseArea.scrollTop = responseArea.scrollHeight;
+        }
+        
+        function getInstanceParams() {
+            const idInstance = document.getElementById('idInstance').value.trim();
+            const apiToken = document.getElementById('apiToken').value.trim();
+            
+            if (!idInstance || !apiToken) {
+                alert('Пожалуйста, заполните idInstance и ApiTokenInstance');
+                return null;
+            }
+            
+            return { idInstance, apiToken };
+        }
+        
+        async function makeApiRequest(method, endpoint, data = null) {
+            const params = getInstanceParams();
+            if (!params) return;
+            
+            const { idInstance, apiToken } = params;
+            updateStatus(method, 'pending');
+            
+            try {
+                const url = `${API_URL}/waInstance${idInstance}/${endpoint}/${apiToken}`;
+                const options = {
+                    method: data ? 'POST' : 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                };
+                
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    updateStatus(method, 'success');
+                    logResponse(method, result);
+                } else {
+                    updateStatus(method, 'error');
+                    logResponse(method, { error: result, status: response.status });
+                }
+            } catch (error) {
+                updateStatus(method, 'error');
+                logResponse(method, { error: error.message, type: 'Network Error' });
+            }
+        }
+        
+        async function getSettings() {
+            await makeApiRequest('getSettings', 'getSettings');
+        }
+        
+        async function getStateInstance() {
+            await makeApiRequest('getStateInstance', 'getStateInstance');
+        }
+        
+        async function sendMessage() {
+            const chatId = document.getElementById('chatId').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            if (!chatId || !message) {
+                alert('Пожалуйста, заполните номер телефона и текст сообщения');
+                return;
+            }
+            
+            const data = {
+                chatId: chatId,
+                message: message
+            };
+            
+            await makeApiRequest('sendMessage', 'sendMessage', data);
+        }
+        
+        async function sendFileByUrl() {
+            const chatId = document.getElementById('fileChatId').value.trim();
+            const urlFile = document.getElementById('fileUrl').value.trim();
+            const fileName = document.getElementById('fileName').value.trim();
+            
+            if (!chatId || !urlFile || !fileName) {
+                alert('Пожалуйста, заполните все поля для отправки файла');
+                return;
+            }
+            
+            const data = {
+                chatId: chatId,
+                urlFile: urlFile,
+                fileName: fileName
+            };
+            
+            await makeApiRequest('sendFileByUrl', 'sendFileByUrl', data);
+        }
+        
+        function clearResponse() {
+            document.getElementById('responseArea').value = '';
+            
+            // Сброс всех индикаторов состояния
+            ['getSettings', 'getStateInstance', 'sendMessage', 'sendFileByUrl'].forEach(method => {
+                document.getElementById(`status-${method}`).className = 'status-indicator';
+            });
+        }
+        
+        // Добавление обработчиков для Enter
+        document.getElementById('message').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        document.getElementById('fileName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendFileByUrl();
+            }
+        });
+        
+        // Автоматическое сохранение параметров подключения
+        document.getElementById('idInstance').addEventListener('input', function() {
+            localStorage.setItem('green-api-idInstance', this.value);
+        });
+        
+        document.getElementById('apiToken').addEventListener('input', function() {
+            localStorage.setItem('green-api-apiToken', this.value);
+        });
+        
+        // Загрузка сохраненных параметров при старте
+        window.addEventListener('load', function() {
+            const savedIdInstance = localStorage.getItem('green-api-idInstance');
+            const savedApiToken = localStorage.getItem('green-api-apiToken');
+            
+            if (savedIdInstance) {
+                document.getElementById('idInstance').value = savedIdInstance;
+            }
+            
+            if (savedApiToken) {
+                document.getElementById('apiToken').value = savedApiToken;
+            }
+        });
+    </script>
 </body>
 </html>
